@@ -10,3 +10,7 @@ xmltodict
 requests
 mysql-connector-python
 pymysql
+gradio-client
+Pillow
+openpyxl
+supabase

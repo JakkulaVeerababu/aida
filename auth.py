@@ -1,15 +1,15 @@
+import os
 import streamlit as st
 from supabase import create_client
 
-SUPABASE_URL = "https://lrldbgepvvosnckvbniz.supabase.co"
+# Load Supabase configuration from environment variables to avoid embedding secrets
+SUPABASE_URL = os.getenv("SUPABASE_URL", "")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY", "")
 
-SUPABASE_ANON_KEY = (
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
-    "eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxybGRiZ2VwdnZvc25ja3Zibml6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA5NTA3NzAsImV4cCI6MjA4NjUyNjc3MH0."
-    "45edn4KGDUmMY5-gCwWlsdcCvkVd-ACMOPtM0nXoKyQ"
-)
-
-supabase = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
+if SUPABASE_URL and SUPABASE_ANON_KEY:
+    supabase = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
+else:
+    supabase = None
 
 def login_ui():
     st.title("Login")
@@ -21,6 +21,10 @@ def login_ui():
         "Discord": "discord",
         "Facebook": "facebook"
     }
+
+    if not SUPABASE_URL:
+        st.warning("SUPABASE_URL is not configured. Login links are disabled.")
+        return
 
     for name, provider in providers.items():
         auth_url = f"{SUPABASE_URL}/auth/v1/authorize?provider={provider}"
